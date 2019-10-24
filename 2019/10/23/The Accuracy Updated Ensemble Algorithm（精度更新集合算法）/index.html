@@ -1,12 +1,55 @@
 <!DOCTYPE html>
-<html>
-<head><meta name="generator" content="Hexo 3.9.0">
-  <meta charset="utf-8">
-  
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 3.9.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/LuckyC0der99.github.io/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/LuckyC0der99.github.io/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/LuckyC0der99.github.io/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/LuckyC0der99.github.io/images/logo.svg" color="#222">
 
-  
-  <title>The Accuracy Updated Ensemble Algorithm（精度更新集合算法） | Hexo</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<link rel="stylesheet" href="/LuckyC0der99.github.io/css/main.css">
+
+
+<link rel="stylesheet" href="/LuckyC0der99.github.io/lib/font-awesome/css/font-awesome.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/LuckyC0der99.github.io/',
+    scheme: 'Muse',
+    version: '7.4.2',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: '',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: 'Copy',
+      copy_success: 'Copied',
+      copy_failure: 'Copy failed'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
   <meta name="description" content="一种用于处理不同类型概念漂移的混合算法算法简介随着在传感器网络，银行和通信等领域广泛应用数据流挖掘技术，越来越多在线处理数据流的算法也应运而生。本文我要介绍的这个算法名为The  Accuracy Updated Ensemble Algorithm。关于这个算法的论文：Reacting to Different Types of Concept Drift: The Accuracy Updat">
 <meta property="og:type" content="article">
 <meta property="og:title" content="The Accuracy Updated Ensemble Algorithm（精度更新集合算法）">
@@ -24,73 +67,165 @@
 <meta name="twitter:title" content="The Accuracy Updated Ensemble Algorithm（精度更新集合算法）">
 <meta name="twitter:description" content="一种用于处理不同类型概念漂移的混合算法算法简介随着在传感器网络，银行和通信等领域广泛应用数据流挖掘技术，越来越多在线处理数据流的算法也应运而生。本文我要介绍的这个算法名为The  Accuracy Updated Ensemble Algorithm。关于这个算法的论文：Reacting to Different Types of Concept Drift: The Accuracy Updat">
 <meta name="twitter:image" content="https://img-blog.csdnimg.cn/20190829013306343.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly93aGVyZWlzbXloYWlyLmJsb2cuY3Nkbi5uZXQ=,size_16,color_FFFFFF,t_70">
-  
-    <link rel="alternate" href="/LuckyC0der99.github.io/atom.xml" title="Hexo" type="application/atom+xml">
-  
-  
-    <link rel="icon" href="/favicon.png">
-  
-  
-    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
-  
-  <link rel="stylesheet" href="/LuckyC0der99.github.io/css/style.css">
-</head>
-</html>
-<body>
-  <div id="container">
-    <div id="wrap">
-      <header id="header">
-  <div id="banner"></div>
-  <div id="header-outer" class="outer">
-    <div id="header-title" class="inner">
-      <h1 id="logo-wrap">
-        <a href="/LuckyC0der99.github.io/" id="logo">Hexo</a>
-      </h1>
-      
-    </div>
-    <div id="header-inner" class="inner">
-      <nav id="main-nav">
-        <a id="main-nav-toggle" class="nav-icon"></a>
-        
-          <a class="main-nav-link" href="/LuckyC0der99.github.io/">Home</a>
-        
-          <a class="main-nav-link" href="/LuckyC0der99.github.io/archives">Archives</a>
-        
-      </nav>
-      <nav id="sub-nav">
-        
-          <a id="nav-rss-link" class="nav-icon" href="/LuckyC0der99.github.io/atom.xml" title="RSS Feed"></a>
-        
-        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
-      </nav>
-      <div id="search-form-wrap">
-        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://LuckyC0der99.github.io"></form>
-      </div>
-    </div>
-  </div>
-</header>
-      <div class="outer">
-        <section id="main"><article id="post-The Accuracy Updated Ensemble Algorithm（精度更新集合算法）" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/LuckyC0der99.github.io/2019/10/23/The Accuracy Updated Ensemble Algorithm（精度更新集合算法）/" class="article-date">
-  <time datetime="2019-10-22T16:53:55.154Z" itemprop="datePublished">2019-10-23</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 class="article-title" itemprop="name">
-      The Accuracy Updated Ensemble Algorithm（精度更新集合算法）
-    </h1>
+
+<link rel="canonical" href="https://LuckyC0der99.github.io/2019/10/23/The Accuracy Updated Ensemble Algorithm（精度更新集合算法）/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>The Accuracy Updated Ensemble Algorithm（精度更新集合算法） | Hexo</title>
   
 
-      </header>
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/LuckyC0der99.github.io/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Hexo</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/LuckyC0der99.github.io/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/LuckyC0der99.github.io/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+  </ul>
+
+</nav>
+</div>
+    </header>
+
     
-    <div class="article-entry" itemprop="articleBody">
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="en">
+    <link itemprop="mainEntityOfPage" href="https://LuckyC0der99.github.io/LuckyC0der99.github.io/2019/10/23/The Accuracy Updated Ensemble Algorithm（精度更新集合算法）/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/LuckyC0der99.github.io/images/avatar.gif">
+      <meta itemprop="name" content="John Doe">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          The Accuracy Updated Ensemble Algorithm（精度更新集合算法）
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2019-10-23 00:53:55" itemprop="dateCreated datePublished" datetime="2019-10-23T00:53:55+08:00">2019-10-23</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2019-10-24 12:45:29" itemprop="dateModified" datetime="2019-10-24T12:45:29+08:00">2019-10-24</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
       
         <h1 id="一种用于处理不同类型概念漂移的混合算法"><a href="#一种用于处理不同类型概念漂移的混合算法" class="headerlink" title="一种用于处理不同类型概念漂移的混合算法"></a>一种用于处理不同类型概念漂移的混合算法</h1><h2 id="算法简介"><a href="#算法简介" class="headerlink" title="算法简介"></a>算法简介</h2><p>随着在传感器网络，银行和通信等领域广泛应用数据流挖掘技术，越来越多在线处理数据流的算法也应运而生。本文我要介绍的这个算法名为The  Accuracy Updated Ensemble Algorithm。关于这个算法的论文：<a href="https://ieeexplore.ieee.org/author/38510644600" target="_blank" rel="noopener">Reacting to Different Types of Concept Drift: The Accuracy Updated Ensemble Algorithm</a> 是由Pznan  University  of  Technology 的一位博士生和他的导师一起提出来发表在IEEE Trans的。而这篇论文的主要贡献就是提出了一种新的数据流分类器，旨在处理不同类型的概念漂移。</p>
 <h2 id="数据流与概念漂移"><a href="#数据流与概念漂移" class="headerlink" title="数据流与概念漂移"></a>数据流与概念漂移</h2><p>&ensp;&ensp;&ensp;&ensp;在这之前我们提到了数据流与概念漂移。那么究竟它们究竟是什么呢？研究它们又有什么意义呢？<br>&ensp;&ensp;&ensp;&ensp;接下来我就用我粗浅的见识来简单介绍一下这两个概念吧。<br>&ensp;&ensp;&ensp;&ensp;1.<strong>数据流</strong><br>&ensp;&ensp;&ensp;&ensp;百度上对数据流的介绍是这样的：数据流（data stream）是一组有序，有起点和终点的字节的数据序列。包括输入流和输出流。数据流最初是通信领域使用的概念，代表传输中所使用的信息的数字编码信号序列。这个概念最初在1998年由Henzinge提出，他将数据流定义为“只能以事先规定好的顺序被读取一次的数据的一个序列”。<br>&ensp;&ensp;&ensp;&ensp;举个简单的例子，大家都知道这段时间网络上仍然发生着大量的电信诈骗事件，如果我们能够用一种方法可以实时准确在互联网上分辨出诈骗信息，将它屏蔽并交给警察叔叔，那么是不是很有意义呢？正如刚才所说，那些此时此刻正在发送的一封一封的短信就是我们的数据流，一个短信就是一个数据（简称样本）。这样可以理解了吧？<br>&ensp;&ensp;&ensp;&ensp;2.<strong>概念漂移</strong><br>&ensp;&ensp;&ensp;&ensp;概念漂移是由英文concept drift直译过来的。它是机器学习领域重要的问题之一，也是数据挖掘工作中的一个巨大的阻碍。网上的翻译都直接用这个作为例句（哈哈）：<br>Concept drift is a big obstacle in the field of mining stream data.<br>&ensp;&ensp;&ensp;&ensp;简单地说就是我们在用数据训练我们的分类器时，随着时间的推移，数据的分布发生了改变，这种改变就叫做概念漂移,随之而来的严重后果就是之前训练的模型就不再适用于处理当前数据了。<br>&ensp;&ensp;&ensp;&ensp;再用刚刚电信诈骗来举例：本来今天一上午到晚上，骗子们偷懒都没有发一封诈骗短信，而到了晚上他们突然想到再不“工作”，第二天就没饭吃了，于是开始陆陆续续向外发短信，而我们的算法在经过了一个白天的大量正常短信的训练，这突然遇到了一封诈骗短信，就突然没有反应过来，直到诈骗短信越来越多，它才慢慢反应过来，这是不是已经为时已晚了呢?这就是机器学习呀…而我们的工作就是尽可能让这种算法在实时处理大量正常短信中夹杂着生活极度不规律的“骗子”发的诈骗短信反应再快一点，准确度（简称精度）更高一点。<br>&ensp;&ensp;&ensp;&ensp;关于概念漂移，我想不久我会专门写一篇关于概念漂移的全面总结性文章，这么简单的介绍一个如此复杂的东西，心里总有点过意不去~</p>
@@ -124,103 +259,170 @@
 <h2 id="Algorithm-AUE2"><a href="#Algorithm-AUE2" class="headerlink" title="Algorithm AUE2"></a>Algorithm AUE2</h2><p><img src="https://img-blog.csdnimg.cn/2019082903043080.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly93aGVyZWlzbXloYWlyLmJsb2cuY3Nkbi5uZXQ=,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><center><br><img src="https://img-blog.csdnimg.cn/20190829030403666.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly93aGVyZWlzbXloYWlyLmJsb2cuY3Nkbi5uZXQ=,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><center></center></center></p>
 <h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>实验研究表明，AUE2可以在具有不同漂移类型的环境中以及在静态环境中提供高分类精度。AUE2在所有测试算法中提供了最佳的平均分类准确度，同时证明比其他集合方法（例如利用套袋或Hoeffding选项树）更少的内存消耗。具体的实验分析，感兴趣者详情请见作者的论文~</p>
 
-      
     </div>
-    <footer class="article-footer">
-      <a data-url="https://LuckyC0der99.github.io/2019/10/23/The Accuracy Updated Ensemble Algorithm（精度更新集合算法）/" data-id="ck2484niq0000ykupu9scwsml" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
+
     
-<nav id="article-nav">
-  
-  
-    <a href="/LuckyC0der99.github.io/2019/09/25/hello-world/" id="article-nav-older" class="article-nav-link-wrap">
-      <strong class="article-nav-caption">Older</strong>
-      <div class="article-nav-title">Hello Worldcjl</div>
-    </a>
-  
-</nav>
+    
+    
 
-  
-</article>
+      <footer class="post-footer">
 
-</section>
         
-          <aside id="sidebar">
-  
-    
 
-  
-    
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+                <a href="/LuckyC0der99.github.io/2019/09/25/hello-world/" rel="next" title="Hello Worldcjl">
+                  <i class="fa fa-chevron-left"></i> Hello Worldcjl
+                </a>
+            </div>
 
-  
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+            </div>
+          </div>
+      </footer>
     
+  </article>
   
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Archives</h3>
-    <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/LuckyC0der99.github.io/archives/2019/10/">October 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/LuckyC0der99.github.io/archives/2019/09/">September 2019</a></li></ul>
-    </div>
+  
+  
+
   </div>
 
 
+          </div>
+          
+
+        </div>
+          
   
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Recent Posts</h3>
-    <div class="widget">
-      <ul>
-        
-          <li>
-            <a href="/LuckyC0der99.github.io/2019/10/23/The Accuracy Updated Ensemble Algorithm（精度更新集合算法）/">The Accuracy Updated Ensemble Algorithm（精度更新集合算法）</a>
-          </li>
-        
-          <li>
-            <a href="/LuckyC0der99.github.io/2019/09/25/hello-world/">Hello Worldcjl</a>
-          </li>
-        
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
       </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#一种用于处理不同类型概念漂移的混合算法"><span class="nav-number">1.</span> <span class="nav-text">一种用于处理不同类型概念漂移的混合算法</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#算法简介"><span class="nav-number">1.1.</span> <span class="nav-text">算法简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#数据流与概念漂移"><span class="nav-number">1.2.</span> <span class="nav-text">数据流与概念漂移</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#概念漂移的几种不同类型"><span class="nav-number">1.3.</span> <span class="nav-text">概念漂移的几种不同类型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#当前主流的几种处理概念漂移的方法与不足"><span class="nav-number">1.4.</span> <span class="nav-text">当前主流的几种处理概念漂移的方法与不足</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Algorithm-AUE2"><span class="nav-number">1.5.</span> <span class="nav-text">Algorithm AUE2</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#小结"><span class="nav-number">1.6.</span> <span class="nav-text">小结</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <img class="site-author-image" itemprop="image" alt="John Doe"
+    src="/LuckyC0der99.github.io/images/avatar.gif">
+  <p class="site-author-name" itemprop="name">John Doe</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/LuckyC0der99.github.io/archives/">
+        
+          <span class="site-state-item-count">2</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
     </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">John Doe</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v3.9.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">Theme – <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> v7.4.2
   </div>
 
-  
-</aside>
+        
+
+
+
+
+
+
+
+
+
+
+
+
         
       </div>
-      <footer id="footer">
-  
-  <div class="outer">
-    <div id="footer-info" class="inner">
-      &copy; 2019 John Doe<br>
-      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
-    </div>
+    </footer>
   </div>
-</footer>
-    </div>
-    <nav id="mobile-nav">
+
   
-    <a href="/LuckyC0der99.github.io/" class="mobile-nav-link">Home</a>
+  <script src="/LuckyC0der99.github.io/lib/anime.min.js"></script>
+  <script src="/LuckyC0der99.github.io/lib/velocity/velocity.min.js"></script>
+  <script src="/LuckyC0der99.github.io/lib/velocity/velocity.ui.min.js"></script>
+<script src="/LuckyC0der99.github.io/js/utils.js"></script><script src="/LuckyC0der99.github.io/js/motion.js"></script>
+<script src="/LuckyC0der99.github.io/js/schemes/muse.js"></script>
+<script src="/LuckyC0der99.github.io/js/next-boot.js"></script>
+
+
+
   
-    <a href="/LuckyC0der99.github.io/archives" class="mobile-nav-link">Archives</a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   
-</nav>
-    
 
-<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+  
 
+  
 
-  <link rel="stylesheet" href="/LuckyC0der99.github.io/fancybox/jquery.fancybox.css">
-  <script src="/LuckyC0der99.github.io/fancybox/jquery.fancybox.pack.js"></script>
-
-
-<script src="/LuckyC0der99.github.io/js/script.js"></script>
-
-
-
-  </div>
 </body>
 </html>
