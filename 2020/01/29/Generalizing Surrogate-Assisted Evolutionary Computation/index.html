@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/JinLong-Chen.github.io/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/JinLong-Chen.github.io/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/JinLong-Chen.github.io/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/JinLong-Chen.github.io/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/JinLong-Chen.github.io/images/favicon.ico?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/JinLong-Chen.github.io/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/JinLong-Chen.github.io/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Online Learning,Ensemble algorithm,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="算法简介A.集成模型&amp;ensp;&amp;ensp;&amp;ensp;&amp;ensp;不完善的代理模型会造成”curse of uncertainty”(不确定性的诅咒)。本文作者追求可以找到能够针对不同问题生成可靠的适应度预测的代理模型。 &amp;ensp;&amp;ensp;&amp;ensp;&amp;ensp;有些问题，我们无法提前知道那种适应度近似技术是最适合当前的优化问题，所以考虑使用集成模型针对不同问题态势生成可靠的准确预测，从而">
+<meta name="keywords" content="Online Learning,Ensemble algorithm">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Generalizing Surrogate-Assisted Evolutionary Computation">
+<meta property="og:url" content="https://cjl946.cn/2020/01/29/Generalizing Surrogate-Assisted Evolutionary Computation/index.html">
+<meta property="og:site_name" content="Jinlong&#39;s Blog">
+<meta property="og:description" content="算法简介A.集成模型&amp;ensp;&amp;ensp;&amp;ensp;&amp;ensp;不完善的代理模型会造成”curse of uncertainty”(不确定性的诅咒)。本文作者追求可以找到能够针对不同问题生成可靠的适应度预测的代理模型。 &amp;ensp;&amp;ensp;&amp;ensp;&amp;ensp;有些问题，我们无法提前知道那种适应度近似技术是最适合当前的优化问题，所以考虑使用集成模型针对不同问题态势生成可靠的准确预测，从而">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/201910290057274.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20191029005914634.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20191029010015587.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20191029010316549.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly93aGVyZWlzbXloYWlyLmJsb2cuY3Nkbi5uZXQ=,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20191029010329216.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly93aGVyZWlzbXloYWlyLmJsb2cuY3Nkbi5uZXQ=,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20191029010444779.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20191029010452532.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20191029010458930.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly93aGVyZWlzbXloYWlyLmJsb2cuY3Nkbi5uZXQ=,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20191029010510119.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly93aGVyZWlzbXloYWlyLmJsb2cuY3Nkbi5uZXQ=,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20191029010608998.png">
+<meta property="og:updated_time" content="2020-01-29T10:56:51.311Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Generalizing Surrogate-Assisted Evolutionary Computation">
+<meta name="twitter:description" content="算法简介A.集成模型&amp;ensp;&amp;ensp;&amp;ensp;&amp;ensp;不完善的代理模型会造成”curse of uncertainty”(不确定性的诅咒)。本文作者追求可以找到能够针对不同问题生成可靠的适应度预测的代理模型。 &amp;ensp;&amp;ensp;&amp;ensp;&amp;ensp;有些问题，我们无法提前知道那种适应度近似技术是最适合当前的优化问题，所以考虑使用集成模型针对不同问题态势生成可靠的准确预测，从而">
+<meta name="twitter:image" content="https://img-blog.csdnimg.cn/201910290057274.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/JinLong-Chen.github.io/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://cjl946.cn/2020/01/29/Generalizing Surrogate-Assisted Evolutionary Computation/">
+
+
+
+
+
+  <title>Generalizing Surrogate-Assisted Evolutionary Computation | Jinlong's Blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/JinLong-Chen.github.io/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Jinlong's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/JinLong-Chen.github.io/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/JinLong-Chen.github.io/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/JinLong-Chen.github.io/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/JinLong-Chen.github.io/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            Archives
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://cjl946.cn/JinLong-Chen.github.io/2020/01/29/Generalizing Surrogate-Assisted Evolutionary Computation/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="陈金龙">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/JinLong-Chen.github.io/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jinlong's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Generalizing Surrogate-Assisted Evolutionary Computation</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-01-29T15:21:56+08:00">
+                2020-01-29
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/JinLong-Chen.github.io/categories/论文笔记/" itemprop="url" rel="index">
+                    <span itemprop="name">论文笔记</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="算法简介"><a href="#算法简介" class="headerlink" title="算法简介"></a>算法简介</h1><h2 id="A-集成模型"><a href="#A-集成模型" class="headerlink" title="A.集成模型"></a>A.集成模型</h2><p>&ensp;&ensp;&ensp;&ensp;不完善的代理模型会造成”curse of uncertainty”(不确定性的诅咒)。本文作者追求可以找到能够针对不同问题生成可靠的适应度预测的代理模型。</p>
+<p>&ensp;&ensp;&ensp;&ensp;有些问题，我们无法提前知道那种适应度近似技术是最适合当前的优化问题，所以考虑使用集成模型针对不同问题态势生成可靠的准确预测，从而考虑各种近似方法的协同合作。<br>最后考虑在线本地加权平均集成，将f(x)定义为：<br><img src="https://img-blog.csdnimg.cn/201910290057274.png" alt="在这里插入图片描述">f^ ens(x)是集成模型的适应度预测值，f^i(x)是第i个代理模型对它的适应度预测值。</p>
+<p>如果一个代理模型更加精确，将会增大它的权值：<img src="https://img-blog.csdnimg.cn/20191029005914634.png" alt="在这里插入图片描述"><br>εj表示第j个代理模型的误差测量值<br>其本质是均方误差RMSE:<br><img src="https://img-blog.csdnimg.cn/20191029010015587.png" alt="在这里插入图片描述"><br>m表示比较的数据数目，e（Xi）表示对点Xi的预测错误率。</p>
+<h2 id="B-景观平滑模型"><a href="#B-景观平滑模型" class="headerlink" title="B  景观平滑模型"></a>B  景观平滑模型</h2><p>&ensp;&ensp;&ensp;&ensp;使用包括整体凸低估，隧道和填充方法等平滑技术，使得受益于”bless of uncertainty”<br>在给定问题的情况下，平滑方法将函数转换为最小值明显更少的函数，从而加快了进化收索的速度。<br>&ensp;&ensp;&ensp;&ensp;在广义框架中，全局凸低估被用于通过低阶多项式回归（PR）实现的局部搜索阶段内问题‘景观的连续平滑问。PR模型在崎景观上具有一般性，还有低计算成本。<br>PR模型在集成模型和平滑模型中使用，仅涉及一次性模型构建成本。</p>
+<h2 id="C-GSM框架-（单目标优化）"><a href="#C-GSM框架-（单目标优化）" class="headerlink" title="C GSM框架 （单目标优化）"></a>C GSM框架 （单目标优化）</h2><h3 id="广义代理模因计算框架（GS-SOMA）"><a href="#广义代理模因计算框架（GS-SOMA）" class="headerlink" title="广义代理模因计算框架（GS-SOMA）"></a>广义代理模因计算框架（GS-SOMA）</h3><h4 id="GS-SOMA算法简介："><a href="#GS-SOMA算法简介：" class="headerlink" title="GS-SOMA算法简介："></a>GS-SOMA算法简介：</h4><p>GS-SOMA首先初始化大量点：<br>&ensp;&ensp;&ensp;&ensp;数据库构建阶段：对一些初始代采用原始的精确适应度值评估，在此阶段不使用任何形式的替代，并将所有精确适应度值评估都存储在中央数据库中。<br>&ensp;&ensp;&ensp;&ensp;本地搜索阶段：对于每个单独的x,使用先前评估的点的存储数据库中提取的m个训练数据点（x附近）动态创建用于模拟适应度函数的N个在线替代项。从这N个代理构建一个代理模型。接下来进入两个单独的本地搜索：<br>&ensp;&ensp;&ensp;&ensp;（1） n个代理模型的集合<br>&ensp;&ensp;&ensp;&ensp;（2）低阶PR模型<br>&ensp;&ensp;&ensp;&ensp;如果得到了改进的解决方案，则GS-SOMA会继续进行单独的更换方案。<br>&ensp;&ensp;&ensp;&ensp;Lamaarckian方案：初始个体的基因型/表现型被基于M1和M2局部改进的而这种较高质量的解决方案所替代，然后重复搜索选循环，直到用完最大的计算预算为止。<br><img src="https://img-blog.csdnimg.cn/20191029010316549.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly93aGVyZWlzbXloYWlyLmJsb2cuY3Nkbi5uZXQ=,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br><img src="https://img-blog.csdnimg.cn/20191029010329216.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly93aGVyZWlzbXloYWlyLmJsb2cuY3Nkbi5uZXQ=,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<h2 id="D-GSM框架-（多目标优化）"><a href="#D-GSM框架-（多目标优化）" class="headerlink" title="D GSM框架 （多目标优化）"></a>D GSM框架 （多目标优化）</h2><h3 id="支配关系"><a href="#支配关系" class="headerlink" title="支配关系"></a>支配关系</h3><p><img src="https://img-blog.csdnimg.cn/20191029010444779.png" alt="在这里插入图片描述"><img src="https://img-blog.csdnimg.cn/20191029010452532.png" alt="在这里插入图片描述"><img src="https://img-blog.csdnimg.cn/20191029010458930.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly93aGVyZWlzbXloYWlyLmJsb2cuY3Nkbi5uZXQ=,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br><img src="https://img-blog.csdnimg.cn/20191029010510119.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly93aGVyZWlzbXloYWlyLmJsb2cuY3Nkbi5uZXQ=,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<h2 id="E-本地搜索计划"><a href="#E-本地搜索计划" class="headerlink" title="E 本地搜索计划"></a>E 本地搜索计划</h2><p>在SO / MOO的GSM框架中，采用了受信任区域调节的搜索策略来确保最终结果收敛到精确计算昂贵的适应度函数的某些局部最优值或全局最优值，尽管替代模型已部署在本地搜索中。 对于GS-SO / MOMA群体中的每个个体，本地搜索以一系列形式的信任区域子问题进行。<br><img src="https://img-blog.csdnimg.cn/20191029010608998.png" alt="在这里插入图片描述"><br>在本研究中，我们考虑了各种不同的精确插值和广义逼近技术，以构建局部代理模型（即M1和M2）。 这些包括插值克里格/高斯过程（GP），插值线性样条曲线径向基函数（RBF）和二阶多项式回归（PR）</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/JinLong-Chen.github.io/tags/Online-Learning/" rel="tag"># Online Learning</a>
+          
+            <a href="/JinLong-Chen.github.io/tags/Ensemble-algorithm/" rel="tag"># Ensemble algorithm</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/JinLong-Chen.github.io/2020/01/29/The Accuracy Updated Ensemble Algorithm（精度更新集合算法）/" rel="prev" title="The Accuracy Updated Ensemble Algorithm（精度更新集合算法）">
+                The Accuracy Updated Ensemble Algorithm（精度更新集合算法） <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">陈金龙</p>
+              <p class="site-description motion-element" itemprop="description">你好学的样子真可爱！</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/JinLong-Chen.github.io/archives/">
+              
+                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                
+                  <span class="site-state-item-count">1</span>
+                  <span class="site-state-item-name">categories</span>
+                
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-name">tags</span>
+                
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/JinLong-Chen" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://blog.csdn.net/weixin_43616215" target="_blank" title="CSDN">
+                      
+                        <i class="fa fa-fw fa-crosshairs"></i>CSDN</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#算法简介"><span class="nav-number">1.</span> <span class="nav-text">算法简介</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#A-集成模型"><span class="nav-number">1.1.</span> <span class="nav-text">A.集成模型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#B-景观平滑模型"><span class="nav-number">1.2.</span> <span class="nav-text">B  景观平滑模型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#C-GSM框架-（单目标优化）"><span class="nav-number">1.3.</span> <span class="nav-text">C GSM框架 （单目标优化）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#广义代理模因计算框架（GS-SOMA）"><span class="nav-number">1.3.1.</span> <span class="nav-text">广义代理模因计算框架（GS-SOMA）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#GS-SOMA算法简介："><span class="nav-number">1.3.1.1.</span> <span class="nav-text">GS-SOMA算法简介：</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#D-GSM框架-（多目标优化）"><span class="nav-number">1.4.</span> <span class="nav-text">D GSM框架 （多目标优化）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#支配关系"><span class="nav-number">1.4.1.</span> <span class="nav-text">支配关系</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#E-本地搜索计划"><span class="nav-number">1.5.</span> <span class="nav-text">E 本地搜索计划</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2019 &mdash; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">陈金龙</span>
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/JinLong-Chen.github.io/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/JinLong-Chen.github.io/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/JinLong-Chen.github.io/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/JinLong-Chen.github.io/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/JinLong-Chen.github.io/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/JinLong-Chen.github.io/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/JinLong-Chen.github.io/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/JinLong-Chen.github.io/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/JinLong-Chen.github.io/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/JinLong-Chen.github.io/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/JinLong-Chen.github.io/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/JinLong-Chen.github.io/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/JinLong-Chen.github.io/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
+
+<!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js\src/loveclick.js"></script>

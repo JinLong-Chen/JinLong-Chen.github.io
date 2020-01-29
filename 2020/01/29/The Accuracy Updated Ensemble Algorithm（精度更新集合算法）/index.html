@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/JinLong-Chen.github.io/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/JinLong-Chen.github.io/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/JinLong-Chen.github.io/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/JinLong-Chen.github.io/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/JinLong-Chen.github.io/images/favicon.ico?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/JinLong-Chen.github.io/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/JinLong-Chen.github.io/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Online Learning,Ensemble algorithm,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="一种用于处理不同类型概念漂移的混合算法算法简介随着在传感器网络，银行和通信等领域广泛应用数据流挖掘技术，越来越多在线处理数据流的算法也应运而生。本文我要介绍的这个算法名为The  Accuracy Updated Ensemble Algorithm。关于这个算法的论文：Reacting to Different Types of Concept Drift: The Accuracy Updat">
+<meta name="keywords" content="Online Learning,Ensemble algorithm">
+<meta property="og:type" content="article">
+<meta property="og:title" content="The Accuracy Updated Ensemble Algorithm（精度更新集合算法）">
+<meta property="og:url" content="https://cjl946.cn/2020/01/29/The Accuracy Updated Ensemble Algorithm（精度更新集合算法）/index.html">
+<meta property="og:site_name" content="Jinlong&#39;s Blog">
+<meta property="og:description" content="一种用于处理不同类型概念漂移的混合算法算法简介随着在传感器网络，银行和通信等领域广泛应用数据流挖掘技术，越来越多在线处理数据流的算法也应运而生。本文我要介绍的这个算法名为The  Accuracy Updated Ensemble Algorithm。关于这个算法的论文：Reacting to Different Types of Concept Drift: The Accuracy Updat">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190829013306343.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly93aGVyZWlzbXloYWlyLmJsb2cuY3Nkbi5uZXQ=,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190829021328117.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/2019082902181890.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/2019082903043080.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly93aGVyZWlzbXloYWlyLmJsb2cuY3Nkbi5uZXQ=,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190829030403666.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly93aGVyZWlzbXloYWlyLmJsb2cuY3Nkbi5uZXQ=,size_16,color_FFFFFF,t_70">
+<meta property="og:updated_time" content="2020-01-29T11:10:00.996Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="The Accuracy Updated Ensemble Algorithm（精度更新集合算法）">
+<meta name="twitter:description" content="一种用于处理不同类型概念漂移的混合算法算法简介随着在传感器网络，银行和通信等领域广泛应用数据流挖掘技术，越来越多在线处理数据流的算法也应运而生。本文我要介绍的这个算法名为The  Accuracy Updated Ensemble Algorithm。关于这个算法的论文：Reacting to Different Types of Concept Drift: The Accuracy Updat">
+<meta name="twitter:image" content="https://img-blog.csdnimg.cn/20190829013306343.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly93aGVyZWlzbXloYWlyLmJsb2cuY3Nkbi5uZXQ=,size_16,color_FFFFFF,t_70">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/JinLong-Chen.github.io/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://cjl946.cn/2020/01/29/The Accuracy Updated Ensemble Algorithm（精度更新集合算法）/">
+
+
+
+
+
+  <title>The Accuracy Updated Ensemble Algorithm（精度更新集合算法） | Jinlong's Blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/JinLong-Chen.github.io/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Jinlong's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/JinLong-Chen.github.io/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/JinLong-Chen.github.io/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/JinLong-Chen.github.io/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/JinLong-Chen.github.io/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            Archives
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://cjl946.cn/JinLong-Chen.github.io/2020/01/29/The Accuracy Updated Ensemble Algorithm（精度更新集合算法）/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="陈金龙">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/JinLong-Chen.github.io/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jinlong's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">The Accuracy Updated Ensemble Algorithm（精度更新集合算法）</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-01-29T15:21:56+08:00">
+                2020-01-29
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/JinLong-Chen.github.io/categories/论文笔记/" itemprop="url" rel="index">
+                    <span itemprop="name">论文笔记</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="一种用于处理不同类型概念漂移的混合算法"><a href="#一种用于处理不同类型概念漂移的混合算法" class="headerlink" title="一种用于处理不同类型概念漂移的混合算法"></a>一种用于处理不同类型概念漂移的混合算法</h1><h2 id="算法简介"><a href="#算法简介" class="headerlink" title="算法简介"></a>算法简介</h2><p>随着在传感器网络，银行和通信等领域广泛应用数据流挖掘技术，越来越多在线处理数据流的算法也应运而生。本文我要介绍的这个算法名为The  Accuracy Updated Ensemble Algorithm。关于这个算法的论文：<a href="https://ieeexplore.ieee.org/author/38510644600" target="_blank" rel="noopener">Reacting to Different Types of Concept Drift: The Accuracy Updated Ensemble Algorithm</a> 是由Pznan  University  of  Technology 的一位博士生和他的导师一起提出来发表在IEEE Trans的。而这篇论文的主要贡献就是提出了一种新的数据流分类器，旨在处理不同类型的概念漂移。</p>
+<h2 id="数据流与概念漂移"><a href="#数据流与概念漂移" class="headerlink" title="数据流与概念漂移"></a>数据流与概念漂移</h2><p>&ensp;&ensp;&ensp;&ensp;在这之前我们提到了数据流与概念漂移。那么究竟它们究竟是什么呢？研究它们又有什么意义呢？<br>&ensp;&ensp;&ensp;&ensp;接下来我就用我粗浅的见识来简单介绍一下这两个概念吧。<br>&ensp;&ensp;&ensp;&ensp;1.<strong>数据流</strong><br>&ensp;&ensp;&ensp;&ensp;百度上对数据流的介绍是这样的：数据流（data stream）是一组有序，有起点和终点的字节的数据序列。包括输入流和输出流。数据流最初是通信领域使用的概念，代表传输中所使用的信息的数字编码信号序列。这个概念最初在1998年由Henzinge提出，他将数据流定义为“只能以事先规定好的顺序被读取一次的数据的一个序列”。<br>&ensp;&ensp;&ensp;&ensp;举个简单的例子，大家都知道这段时间网络上仍然发生着大量的电信诈骗事件，如果我们能够用一种方法可以实时准确在互联网上分辨出诈骗信息，将它屏蔽并交给警察叔叔，那么是不是很有意义呢？正如刚才所说，那些此时此刻正在发送的一封一封的短信就是我们的数据流，一个短信就是一个数据（简称样本）。这样可以理解了吧？<br>&ensp;&ensp;&ensp;&ensp;2.<strong>概念漂移</strong><br>&ensp;&ensp;&ensp;&ensp;概念漂移是由英文concept drift直译过来的。它是机器学习领域重要的问题之一，也是数据挖掘工作中的一个巨大的阻碍。网上的翻译都直接用这个作为例句（哈哈）：<br>Concept drift is a big obstacle in the field of mining stream data.<br>&ensp;&ensp;&ensp;&ensp;简单地说就是我们在用数据训练我们的分类器时，随着时间的推移，数据的分布发生了改变，这种改变就叫做概念漂移,随之而来的严重后果就是之前训练的模型就不再适用于处理当前数据了。<br>&ensp;&ensp;&ensp;&ensp;再用刚刚电信诈骗来举例：本来今天一上午到晚上，骗子们偷懒都没有发一封诈骗短信，而到了晚上他们突然想到再不“工作”，第二天就没饭吃了，于是开始陆陆续续向外发短信，而我们的算法在经过了一个白天的大量正常短信的训练，这突然遇到了一封诈骗短信，就突然没有反应过来，直到诈骗短信越来越多，它才慢慢反应过来，这是不是已经为时已晚了呢?这就是机器学习呀…而我们的工作就是尽可能让这种算法在实时处理大量正常短信中夹杂着生活极度不规律的“骗子”发的诈骗短信反应再快一点，准确度（简称精度）更高一点。<br>&ensp;&ensp;&ensp;&ensp;关于概念漂移，我想不久我会专门写一篇关于概念漂移的全面总结性文章，这么简单的介绍一个如此复杂的东西，心里总有点过意不去~</p>
+<h2 id="概念漂移的几种不同类型"><a href="#概念漂移的几种不同类型" class="headerlink" title="概念漂移的几种不同类型"></a>概念漂移的几种不同类型</h2><p>概念漂移可以从很多角度进行细分，如果按<strong>变化速度</strong>来的话，可以分为四类：</p>
+<ol>
+<li><p><strong>突变型（sudden）概念漂移</strong> ，发生迅速且不可逆；</p>
+</li>
+<li><p><strong>渐变型（incremental gradual）概念漂移</strong>,incremental和gradual都是强调改变发生的缓慢，incremental强调值的随时间改变，gradual则是数据分布的改变；</p>
+</li>
+<li><p><strong>临时型（recurring）概念漂移</strong>，recurring则是一种temporary（临时性）的改变，在短时间内会恢复成之前的状态。这是一种不规则的反复变化；</p>
+</li>
+<li><p><strong>稀罕型（blip）概念漂移</strong>，通常又将这种情况被视为anomaly或者outlier（异常）；</p>
+</li>
+<li><p><strong>噪音型（noise）概念漂移</strong> 这一种随机的改变也被视为噪音的一种，往往需要剔除；<br><img src="https://img-blog.csdnimg.cn/20190829013306343.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly93aGVyZWlzbXloYWlyLmJsb2cuY3Nkbi5uZXQ=,size_16,color_FFFFFF,t_70" alt="不同的概念漂移"></p>
+<p>来源：<a href="https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=6779381" target="_blank" rel="noopener">A Review on Real Time Data Stream Classification and Adapting To Various Concept Drift Scenarios</a></p>
+</li>
+</ol>
+<p>如果按照数据的<strong>概率分布</strong>的角度来分析，又可分为：</p>
+<ol>
+<li><strong>真实漂移（real drift）</strong>：先验概率 <img src="https://img-blog.csdnimg.cn/20190829021328117.png" width="12%" alt>发生了变化，且是独立于<img src="https://img-blog.csdnimg.cn/2019082902181890.png" width="7%" alt>   表面的变化。由于条件概率发生改变，决策超平面发生位移。</li>
+<li><strong>虚拟漂移(virtual drift)</strong>:数据x的分布不会影响决策超平面的变化。</li>
+<li><strong>类先验(class  prior)</strong>: 它会影响类间的不平衡比率，即可以交换少数类和多数类的概率。<br>详情请见<a href="http://xueshu.baidu.com/usercenter/paper/show?paperid=eac2f31d58064d0e4325f36c1fdb3ffb&site=xueshu_se" target="_blank" rel="noopener">Learning in Nonstationary Environments: A Survey</a></li>
+</ol>
+<h2 id="当前主流的几种处理概念漂移的方法与不足"><a href="#当前主流的几种处理概念漂移的方法与不足" class="headerlink" title="当前主流的几种处理概念漂移的方法与不足"></a>当前主流的几种处理概念漂移的方法与不足</h2><ol>
+<li>滑动窗口法（ sliding  window approaches）</li>
+<li>新的在线算法（new  online  algorithms）</li>
+<li>特殊检测技术（special  detection  tech-niques）</li>
+<li>自适应集合（ adaptive  ensembles）</li>
+</ol>
+<p>以上几种方法的系统性评述同样的我将放在另一篇文章里单独介绍，要知道的是它们都需要做一下改进才能适应不断变化的环境。<br>&ensp;&ensp;&ensp;&ensp;在本文中，作者主要关注自适应集合这一主题，它从基于有固定大小块的数据流中顺序生成组件分类器。在这样的集合中，当新块到达时，评估现有的组件分类器并更新它们的组合权重。从最近的块中学习的新分类器将添加到集合中，并且根据评估的结果去除最弱的分类器。此外，应用标准的静态学习算法（例如C4.5）来从给定块中生成分类器。SEA算法是第一个这样的自适应集合，紧接着是精确加权集合算法AWE，它也是目前这种类型中最具代表性的方法。<br>&ensp;&ensp;&ensp;&ensp;固定大小的数据块内发生概念漂移时，基于块的集成可能不会对变化作出充分反应。特别是，对于突然漂移，它们可能反应太慢，因为过时的块产生的分类器仍然是有效的组件，即使它们具有不准确的权重。这种情况与怎么样适当调整数据块大小有关。使用小尺寸块可以部分地帮助对突然变化做出反应，但这样做会在稳定期间损害集合的性能并增加计算成本。令有研究表明基于块的集合对其他类型漂移也会发生不好反应。另一方面，在线增量集合，例如在线或利用套袋，对突然漂移的反应更快，但没有利用周期性加权机制，不足以为逐渐变化提供足够的反应。此外，增量集合的通常比基于块的方法有更高的计算成本。所以，如果将这两种方法结合在一起，那么可能对问题的解决有很好的帮助哦~于是就有了这个 <strong>AUE2</strong> 算法</p>
+<h2 id="Algorithm-AUE2"><a href="#Algorithm-AUE2" class="headerlink" title="Algorithm AUE2"></a>Algorithm AUE2</h2><p><img src="https://img-blog.csdnimg.cn/2019082903043080.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly93aGVyZWlzbXloYWlyLmJsb2cuY3Nkbi5uZXQ=,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><center><br><img src="https://img-blog.csdnimg.cn/20190829030403666.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly93aGVyZWlzbXloYWlyLmJsb2cuY3Nkbi5uZXQ=,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><center></center></center></p>
+<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>实验研究表明，AUE2可以在具有不同漂移类型的环境中以及在静态环境中提供高分类精度。AUE2在所有测试算法中提供了最佳的平均分类准确度，同时证明比其他集合方法（例如利用套袋或Hoeffding选项树）更少的内存消耗。具体的实验分析，感兴趣者详情请见作者的论文~</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/JinLong-Chen.github.io/tags/Online-Learning/" rel="tag"># Online Learning</a>
+          
+            <a href="/JinLong-Chen.github.io/tags/Ensemble-algorithm/" rel="tag"># Ensemble algorithm</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/JinLong-Chen.github.io/2020/01/29/Generalizing Surrogate-Assisted Evolutionary Computation/" rel="next" title="Generalizing Surrogate-Assisted Evolutionary Computation">
+                <i class="fa fa-chevron-left"></i> Generalizing Surrogate-Assisted Evolutionary Computation
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">陈金龙</p>
+              <p class="site-description motion-element" itemprop="description">你好学的样子真可爱！</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/JinLong-Chen.github.io/archives/">
+              
+                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                
+                  <span class="site-state-item-count">1</span>
+                  <span class="site-state-item-name">categories</span>
+                
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-name">tags</span>
+                
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/JinLong-Chen" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://blog.csdn.net/weixin_43616215" target="_blank" title="CSDN">
+                      
+                        <i class="fa fa-fw fa-crosshairs"></i>CSDN</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#一种用于处理不同类型概念漂移的混合算法"><span class="nav-number">1.</span> <span class="nav-text">一种用于处理不同类型概念漂移的混合算法</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#算法简介"><span class="nav-number">1.1.</span> <span class="nav-text">算法简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#数据流与概念漂移"><span class="nav-number">1.2.</span> <span class="nav-text">数据流与概念漂移</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#概念漂移的几种不同类型"><span class="nav-number">1.3.</span> <span class="nav-text">概念漂移的几种不同类型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#当前主流的几种处理概念漂移的方法与不足"><span class="nav-number">1.4.</span> <span class="nav-text">当前主流的几种处理概念漂移的方法与不足</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Algorithm-AUE2"><span class="nav-number">1.5.</span> <span class="nav-text">Algorithm AUE2</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#小结"><span class="nav-number">1.6.</span> <span class="nav-text">小结</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2019 &mdash; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">陈金龙</span>
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/JinLong-Chen.github.io/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/JinLong-Chen.github.io/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/JinLong-Chen.github.io/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/JinLong-Chen.github.io/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/JinLong-Chen.github.io/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/JinLong-Chen.github.io/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/JinLong-Chen.github.io/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/JinLong-Chen.github.io/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/JinLong-Chen.github.io/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/JinLong-Chen.github.io/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/JinLong-Chen.github.io/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/JinLong-Chen.github.io/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/JinLong-Chen.github.io/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
+
+<!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js\src/loveclick.js"></script>
