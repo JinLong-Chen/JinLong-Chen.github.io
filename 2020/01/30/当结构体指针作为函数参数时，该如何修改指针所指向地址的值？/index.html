@@ -92,7 +92,7 @@
 <meta property="og:image" content="https://img-blog.csdnimg.cn/20191120091634226.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly93aGVyZWlzbXloYWlyLmJsb2cuY3Nkbi5uZXQ=,size_16,color_FFFFFF,t_70">
 <meta property="og:image" content="https://img-blog.csdnimg.cn/20191120092729865.png">
 <meta property="og:image" content="https://img-blog.csdnimg.cn/20191120093111911.png">
-<meta property="og:updated_time" content="2020-01-30T08:57:30.554Z">
+<meta property="og:updated_time" content="2020-01-30T11:44:23.272Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="当结构体指针作为函数参数时，该如何修改指针所指向地址的值？">
 <meta name="twitter:description" content="Debug C问题背景：在一次操作系统模拟实验中，我构造了一个PCB结构体，它包括几个变量：名称（字符串）、到达时间（整形）。。。12345678typedef struct pcb &amp;#123;	char pname[N];                 //进程名	char state;					  //状态(就绪R,等待W，完成C)	int apply;					  //当前申请量		in">
@@ -349,7 +349,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  759 字
+                  762 字
                 </span>
               
 
@@ -365,7 +365,7 @@
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
                 <span title="阅读时长">
-                  2 分钟
+                  3 分钟
                 </span>
               
             </div>
@@ -394,6 +394,7 @@
 <h2 id="问题简述：我构造了一个初始化函数想要手动输入各个PCB的内容，在我输入PCB的名称时，却总是报错，程序被中断执行。"><a href="#问题简述：我构造了一个初始化函数想要手动输入各个PCB的内容，在我输入PCB的名称时，却总是报错，程序被中断执行。" class="headerlink" title="问题简述：我构造了一个初始化函数想要手动输入各个PCB的内容，在我输入PCB的名称时，却总是报错，程序被中断执行。"></a>问题简述：我构造了一个初始化函数想要手动输入各个PCB的内容，在我输入PCB的名称时，却总是报错，程序被中断执行。</h2><p>注意：以下代码在编译时是没有问题的。</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">initpcb</span><span class="params">(PCB *P)</span> </span>&#123;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"Please input current PCB's name :"</span>);</span><br><span class="line">	scanf_s(<span class="string">"%s"</span>,P-&gt;pname,N);                      </span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"\nPlease input current %s 's apply :"</span>,P-&gt;pname);</span><br><span class="line">	scanf_s(<span class="string">"%d"</span>,&amp;P-&gt;apply);</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"\nPlesae input current %s 's occupy :"</span>, P-&gt;pname);</span><br><span class="line">	scanf_s(<span class="string">"%d"</span>, &amp;P-&gt;occupy);</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"\nPlease input current %s 's need :"</span>, P-&gt;pname);</span><br><span class="line">	scanf_s(<span class="string">"%d"</span>, &amp;P-&gt;need);</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"\n%s create Achieve!"</span>, P-&gt;pname);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">PCB *P;</span><br><span class="line">initpcb(P);</span><br><span class="line">getchar();</span><br><span class="line">getchar();</span><br><span class="line"><span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
+<p>&lt; !– more –&gt;</p>
 <h3 id="进入运行画面"><a href="#进入运行画面" class="headerlink" title="进入运行画面"></a>进入运行画面</h3><p><img src="https://img-blog.csdnimg.cn/201911200908188.png" alt="在这里插入图片描述"><br>在我输入了PCB名称 A后，出现了报错。<br><img src="https://img-blog.csdnimg.cn/20191120090855596.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly93aGVyZWlzbXloYWlyLmJsb2cuY3Nkbi5uZXQ=,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
 <h3 id="如图所示，上面显示0xC0000005写入位置0xCCCCCCCC时发生访问冲突。"><a href="#如图所示，上面显示0xC0000005写入位置0xCCCCCCCC时发生访问冲突。" class="headerlink" title="如图所示，上面显示0xC0000005写入位置0xCCCCCCCC时发生访问冲突。"></a>如图所示，上面显示0xC0000005写入位置0xCCCCCCCC时发生访问冲突。</h3><p>这种异常提示往往是在你使用了指针的时候遇到的，原因大概有两种：</p>
 <ol>
@@ -536,6 +537,9 @@
   <aside id="sidebar" class="sidebar">
     
     <div class="sidebar-inner">
+              
+        
+
 
       
 
@@ -550,6 +554,9 @@
         </ul>
       
 
+
+
+
       <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -557,12 +564,51 @@
               <img class="site-author-image" itemprop="image" src="/JinLong-Chen.github.io/images/touxiang.jpg" alt="陈金龙">
             
               <p class="site-author-name" itemprop="name">陈金龙</p>
-              <p class="site-description motion-element" itemprop="description">你好学的样子真可爱！</p>
+              <p class="site-description motion-element" itemprop="description">你好学的样子真可爱！  </p>
+            
+
+
+
+          </div>
+
+       
+
+          <nav class="site-state motion-element">
 
             
-        
-          <!-- canvas粒子时钟 -->
-          <div style>
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/JinLong-Chen.github.io/archives/">
+              
+                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/JinLong-Chen.github.io/categories/index.html">
+                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/JinLong-Chen.github.io/tags/index.html">
+                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+<p></p>
+<div style>
   <canvas id="canvas" style="width:60%;">当前浏览器不支持canvas，请更换浏览器后再试</canvas>
 </div>
 <script>
@@ -827,52 +873,14 @@ if(canvas.getContext){
 })();
 </script>
 
-        
-
-
-
-          </div>
-
-          <nav class="site-state motion-element">
-
-            
-              <div class="site-state-item site-state-posts">
-              
-                <a href="/JinLong-Chen.github.io/archives/">
-              
-                  <span class="site-state-item-count">5</span>
-                  <span class="site-state-item-name">日志</span>
-                </a>
-              </div>
-            
-
-            
-              
-              
-              <div class="site-state-item site-state-categories">
-                <a href="/JinLong-Chen.github.io/categories/index.html">
-                  <span class="site-state-item-count">4</span>
-                  <span class="site-state-item-name">分类</span>
-                </a>
-              </div>
-            
-
-            
-              
-              
-              <div class="site-state-item site-state-tags">
-                <a href="/JinLong-Chen.github.io/tags/index.html">
-                  <span class="site-state-item-count">5</span>
-                  <span class="site-state-item-name">标签</span>
-                </a>
-              </div>
-            
 
           </nav>
 
           
 
+   
 
+         
 
 
 
@@ -1200,11 +1208,22 @@ if(canvas.getContext){
                   </canvas>
               </div>
           </div>
-          
+         
+    
+
+
+    
+    
+     
+
+       
+    
+
 
 
 
     </div>
+
   </aside>
 
 
